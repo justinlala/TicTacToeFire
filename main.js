@@ -365,7 +365,7 @@ $scope.gameTimer = {
 				console.log("your turn");
 				clearTime();
 				startTime();
-				game.counter = ($scope.game.board[r][c]==''&&$scope.gameTimer.paused==false ? $scope.game.counter+1 : $scope.game.counter);
+				$scope.game.counter = ($scope.game.board[r][c]==''&&$scope.gameTimer.paused==false ? $scope.game.counter+1 : $scope.game.counter);
 				$scope.game.board[r][c]=($scope.game.board[r][c]==''&&$scope.gameTimer.paused==false ? $scope.players[0].chip : $scope.game.board[r][c]);
 				afterMove();
 	};
