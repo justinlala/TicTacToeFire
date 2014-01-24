@@ -1,13 +1,14 @@
 var TictacRef;
 var IDs;
-
+var playerNum=0; 
 
 angular.module("TicTacTio", ["firebase"])
 	.controller("play", function($scope, $firebase, $interval,$q) {
 
 
 	$scope.onlinePlay = function(){
-	TictacRef = new Firebase("https://tictactio.firebaseio.com/");
+
+	TictacRef = new Firebase("https://tictactio.firebaseio.com/games");
 	$scope.fbRoot = $firebase(TictacRef);	
 
 	$scope.fbRoot.$on("loaded", function(){
@@ -16,9 +17,9 @@ angular.module("TicTacTio", ["firebase"])
 		{
 
 	 		$scope.fbRoot.$add( { board: [['','',''],['','',''],['','','']], gameNum: 1, bestOf: 3, counter: 0, first: true });
-	 		$scope.fbRoot.$add( { menu: false,
+	 		$scope.fbRoot.$add( { menu: true,
 				wait: false,
-				start: false,
+				start: true,
 				winner: false,
 				regplay: 1,
 				timedGame: true,
@@ -28,7 +29,7 @@ angular.module("TicTacTio", ["firebase"])
 				wayNum: 0,
 				homewinner: false,
 				awaywinner: false,
-				open: false
+				open: true
 			});
 			$scope.fbRoot.$add( {
 				timeChoiceText: "On",
@@ -39,18 +40,31 @@ angular.module("TicTacTio", ["firebase"])
 				timeUpWin: ""
 			});
 			$scope.fbRoot.$add( {chip:"X",name:"Home",wins: 0} );
-
 			$scope.fbRoot.$add( {chip:"O",name:"Away",wins: 0} );
+			playerNum = IDs.length;
+
 
 			$scope.fbRoot.$on("change", function() {
 				IDs = $scope.fbRoot.$getIndex();
 				$scope.game = $scope.fbRoot.$child(IDs[0]);
 				$scope.visual = $scope.fbRoot.$child(IDs[1]);
 				$scope.gameTimer =$scope.fbRoot.$child(IDs[2]);
-				$scope.players = [$scope.fbRoot.$child(IDs[3]),$scope.fbRoot.$child(IDs[4])];
+				$scope.players=[$scope.fbRoot.$child(IDs[3]),$scope.fbRoot.$child(IDs[4])];
 				console.log($scope.game);
 			});
 			console.log($scope.game);
+		}
+		else if(IDs.length == 5)
+		{
+			playerNum = IDs.length - 4;
+			$scope.fbRoot.$on("change", function() {
+
+				$scope.game = $scope.fbRoot.$child(IDs[0]);
+			$scope.visual = $scope.fbRoot.$child(IDs[1]);
+			$scope.gameTimer =$scope.fbRoot.$child(IDs[2]);
+			$scope.players = [$scope.fbRoot.$child(IDs[3]),$scope.fbRoot.$child(IDs[4])];
+			});
+			
 		}
 		else
 		{
@@ -59,39 +73,16 @@ angular.module("TicTacTio", ["firebase"])
 			$scope.visual = $scope.fbRoot.$child(IDs[1]);
 			$scope.gameTimer =$scope.fbRoot.$child(IDs[2]);
 			$scope.players = [$scope.fbRoot.$child(IDs[3]),$scope.fbRoot.$child(IDs[4])];
-			x=$scope.game;
-			console.log(x.board);
-			console.log($scope.game);
-			setTimeout(function() {
-				if($scope.game!=undefined){
-				deffer.resolve();
-			}
-		}, 10000);
-			
 		}
-
-	console.log($scope.game);
 
 	});
 
 };
 	
-// 	var deffer = $q.defer();
 
-// 	deffer.promise.then(function() {
-
-// 		$scope.$watch('$scope.game',function(){
-// 			console.log("askjdfhajdfksjdfhasf");
-// 			$scope.game.$save();
-// 		});
-// 	});
-
-
-// console.log("Helllooooooo");
-// console.log($scope.game);
 
 	
-
+	var onlinesync = false;
 
 	$scope.players = [{chip:"X",name:"Home",wins: 0},{chip:"O",name:"Away",wins: 0}];
 
@@ -183,6 +174,35 @@ $scope.gameTimer = {
             
     };
 
+    onlineBoardReset = function(){
+
+    	$scope.game = { board: [['','',''],['','',''],['','','']], gameNum: 1, bestOf: 3, counter: 0, first: true };
+	 	$scope.visual = { menu: true,
+				wait: false,
+				start: true,
+				winner: false,
+				regplay: 1,
+				timedGame: true,
+				mopen: false,
+				apos: "'",
+				way: '',
+				wayNum: 0,
+				homewinner: false,
+				awaywinner: false,
+				open: true
+			};
+			$scope.gameTimer = {
+				timeChoiceText: "On",
+				counts: [false, false, false, false, false, false, false, false],
+				timesup: false,
+				paused: false,
+				countin: 0,
+				timeUpWin: ""
+			};
+			$scope.players = [{chip:"X",name:"Home",wins: 0},{chip:"O",name:"Away",wins: 0}];
+
+    };
+
 	startTime = function(){
 
 		if ( angular.isDefined(timekeeper) ) return;
@@ -240,7 +260,8 @@ $scope.gameTimer = {
 	}
 
 	updateFire = function(){
-		if($scope.visual.regplay==1){
+		if(onlinesync){
+			console.log($scope.game);
 			$scope.players[0].$save();
 			$scope.players[1].$save();
 			$scope.game.$save();
@@ -282,8 +303,15 @@ $scope.gameTimer = {
 					$scope.game.board[1][1] = "";
 					$scope.visual.mopen = false;
 					clearTime();
-					updateFire();
+					if($scope.visual.regplay==1){
+						onlinesync = true;
+						$scope.onlinePlay();
+					}
+					else {
+						onlinesync = false;
+					}
 				}
+
 				else {
 					$scope.visual.menu=false;
 					$scope.visual.wait = false;
@@ -294,7 +322,11 @@ $scope.gameTimer = {
 			}
 			else {
 				$scope.visual.mopen = false;
-				if($scope.visual.regplay == 0 || $scope.visual.regplay == 1){passNplay(r,c);updateFire();}
+				if($scope.visual.regplay == 0){passNplay(r,c);}
+				else if ($scope.visual.regplay == 1){
+						networkPlay(r,c);
+						updateFire();
+				}
 				else if ($scope.visual.regplay == 2) {
 					if(checkTurn() == $scope.players[1].chip){playerMove(r,c); player1total += r+c;}
 					if (checkTurn() == $scope.players[0].chip && $scope.visual.winner == false){ 
@@ -357,6 +389,24 @@ $scope.gameTimer = {
 				$scope.game.counter = ($scope.game.board[r][c]==''&&$scope.gameTimer.paused==false ? $scope.game.counter+1 : $scope.game.counter);
 				$scope.game.board[r][c]=($scope.game.board[r][c]==''&&$scope.gameTimer.paused==false ? checkTurn() : $scope.game.board[r][c]);
 				afterMove();
+				
+	};
+
+	networkPlay = function (r,c) {
+
+
+				console.log("network move");
+				clearTime();
+				startTime();
+				console.log($scope.players[playerNum].chip);
+				console.log(checkTurn());
+				console.log($scope.game.counter);
+				if(checkTurn()!=$scope.players[playerNum].chip){
+					console.log("Its def your turn");
+					$scope.game.counter = ($scope.game.board[r][c]==''&&$scope.gameTimer.paused==false ? $scope.game.counter+1 : $scope.game.counter);
+					$scope.game.board[r][c]=($scope.game.board[r][c]==''&&$scope.gameTimer.paused==false ? checkTurn() : $scope.game.board[r][c]);
+					afterMove();
+				}
 				
 	};
 
@@ -461,6 +511,13 @@ $scope.gameTimer = {
 			$scope.game.gameNum = 1;
 			$scope.visual.menu = false;
 			$scope.game.first = true;
+			onlinesync = false;
+			if($scope.visual.regplay==1){
+				console.log("Reg play 0");
+				onlineBoardReset();
+				$scope.visual.regplay = 0;
+				$scope.visual.$save();
+			}
 		}
 		else if ($scope.visual.wait == true && $scope.visual.mopen==false) {
 			console.log("wait true");
@@ -691,7 +748,7 @@ $scope.gameTimer = {
 			setTimeout(function(){
 				$scope.$apply(function() {
 				$scope.game.board[setmove[0]][setmove[1]]=$scope.players[1].chip;
-				game.counter++;
+				$scope.game.counter++;
 				if(!winfound && game.counter>4){
 					console.log("winfound and game.counter 4");
 					game.counter=9;
