@@ -294,13 +294,13 @@ $scope.gameTimer = {
 			}
 			else {
 				$scope.visual.mopen = false;
-				if($scope.visual.regplay == 0){passNplay(r,c);updateFire();}
-				else{
+				if($scope.visual.regplay == 0 || $scope.visual.regplay == 1){passNplay(r,c);updateFire();}
+				else if ($scope.visual.regplay == 2) {
 					if(checkTurn() == $scope.players[1].chip){playerMove(r,c); player1total += r+c;}
 					if (checkTurn() == $scope.players[0].chip && $scope.visual.winner == false){ 
 						console.log("next turn");
 						winfound = false;
-						track = game.counter; 
+						track = $scope.game.counter; 
 						placeMove(computerPlayer($scope.game.board)); 
 						iter = 0; 
 					}
