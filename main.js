@@ -20,7 +20,7 @@ angular.module("TicTacTio", ["firebase"])
 				wait: false,
 				start: false,
 				winner: false,
-				regplay: 0,
+				regplay: 1,
 				timedGame: true,
 				mopen: false,
 				apos: "'",
