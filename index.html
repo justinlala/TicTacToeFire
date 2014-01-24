@@ -1,0 +1,74 @@
+<html x-ng-app="TicTacTio">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<title>TicTacTio</title>
+	<link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="css/normalize.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<link rel="stylesheet" type="text/css" href="css/newstyle.css">
+	<link href='http://fonts.googleapis.com/css?family=Exo:100' rel='stylesheet' type='text/css'>
+
+	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular.min.js"></script>
+	<script src="https://cdn.firebase.com/v0/firebase.js"></script>
+	<script src="https://cdn.firebase.com/libs/angularfire/0.6.0/angularfire.min.js"></script>
+
+	<script type="text/javascript" src="main.js"></script>
+
+</head>
+<body x-ng-controller="play" x-ng-inti="turnlabel=''; gamelabel=''" ng-keydown="keyPressPause($event)">
+	<div id="all">
+	<header id ="headr" x-ng-class="{shine:visual.start, titleq:(visual.open||visual.wait)}" x-ng-click="quit()">
+		<div x-ng-class="{title:!visual.start, titleq:visual.start}">Tictact<span style="color: orange">.io</span></div>
+		<div class="clear"></div>
+		<a class="box-shadow-menu" x-ng-show="((!visual.start && visual.timedGame) || !visual.timedGame)"></a>
+		<div class="clear"></div>
+		<a x-ng-class="{quit:true, dblockclear:visual.start}">Quit?</a>
+	</header>
+	<div id = "content" >
+		<div x-ng-class="{sidel:true, dblock: visual.open}" x-ng-animate="open"> 
+			<h3 x-ng-class="{white:visual.winner}">{{players[0].name}}</h3>
+			<h4 x-ng-class="{white:visual.winner}">0{{players[0].wins}}</h4>
+		</div>
+		<div x-ng-class="{main:true}">
+
+			<div x-ng-class="{row:true, greyOut: visual.winner}" x-ng-repeat="r in game.board track by $index;" x-ng-init="now=$index;">
+				<div x-ng-class="{cell:true, greyOut: (visual.winner||gameTimer.paused), centerOrangehov: (now==1&&$index==1&&!visual.open), centerOrange: (now==1&&$index==1&&visual.wait), loseSquare: visual.winner, winSquare: isWinning(now,nowcell)}" x-ng-repeat="c in r track by $index" x-ng-init="nowcell=$index;" x-ng-click="clickCell(now,nowcell);" >
+					<p x-ng-class ="{celltext:true, starttext:visual.wait}">{{starttext}}{{game.board[now][nowcell]}}</p>
+				</div>
+			</div>
+
+		</div>
+		
+		<div x-ng-class="{bestofbox:true, dblock: visual.open, white: gameTimer.paused}" x-ng-mouseenter="turnlabel=visual.apos + 's Turn'; gamelabel='Game '" x-ng-mouseleave="turnlabel=''; gamelabel=''" >
+			<div style="text-align: left">{{checkNextTurn()}}{{turnlabel}}</div>
+			<div style="text-align: right; margin-top: -20px">{{gamelabel}}{{game.gameNum}}/{{game.bestOf}}</div>
+		</div>
+
+		<div x-ng-class="{sider:true, dblock: visual.open}"> 
+			<h3 x-ng-class="{white:visual.winner}">{{players[1].name}}</h3>
+			<h4 x-ng-class="{white:visual.winner}">0{{players[1].wins}}</h4>
+		</div>
+
+	</div>
+
+	<!-- Hidden Content -->
+	<div x-ng-class="{playagain:true, dblock: visual.winner}" x-ng-click="playAgain()"><div id="playagaintext">Play Again</div></div>
+	<div x-ng-class="{playagain:true, dblock: gameTimer.paused}" x-ng-click="pauseTime()"><div id="playagaintext">-Paused-</div></div>
+	<div x-ng-class="{menubox:true, menuopen: visual.mopen, menuclosed: !visual.mopen}">
+		<div x-ng-class="{menu:true, menuopen: visual.mopen, menuclosed: !visual.mopen}">
+			<div x-ng-class="{timeplay:true, timeselected: visual.timedGame}" x-ng-click="visual.timedGame=!visual.timedGame;
+			visual.menu=true; visual.wait = true; game.board[1][1] = 'Start'; players[1].name = 'Away'; "><span class="menutext">Time:&nbsp;{{gameTimer.timeChoiceText}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><i class="fa fa-tachometer"></i></div>
+			<div x-ng-class="{typeplay:true, typeplayselected: (visual.regplay==0)}" x-ng-click="visual.regplay=0;
+			visual.menu=true; visual.wait = true; game.board[1][1] = 'Start'; players[1].name = 'Away'; "><span class="menutext">Pass-N-Play&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><i class="fa fa-user"></i><i class="fa fa-user"></i></div>
+			<div x-ng-class="{typeplay:true, typeplayselected: (visual.regplay==1)}" x-ng-click=" onlinePlay(); visual.regplay=1;  visual.menu=true; visual.wait = true; game.board[1][1] = 'Start'; players[1].name = 'Comp';"><span class="menutext">Online&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><i class="fa fa-globe"></i></div>
+			<div x-ng-class="{typeplay:true, typeplayselected: (visual.regplay==2)}" x-ng-click="visual.regplay=2;  visual.menu=true; visual.wait = true; game.board[1][1] = 'Start'; players[1].name = 'Comp';"><span class="menutext">1 Player&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><i class="fa fa-user"></i></div>
+		</div>	
+	</div>	
+	<div x-ng-class="{progressHolderrow:true, dblock:visual.start&&visual.timedGame}"><div class="progressHolder"  x-ng-click="pauseTime()"><div x-ng-repeat="dots in gameTimer.counts track by $index" x-ng-class="{dot: true, fill: gameTimer.counts[$index], gameTime: gameTimer.timesup}"></div></div></div>
+	<div x-ng-class="{graybox:true, dblock: (visual.winner), zdex: gameTimer.paused}"></div>	
+	<div x-ng-class="{homewin:false, dblockclear: visual.homewinner}"></div>
+	<div x-ng-class="{awaywin:false, dblockclear: visual.awaywinner}"></div>
+	<!-- Hidden Content -->
+</div>
+</body>
+</html>

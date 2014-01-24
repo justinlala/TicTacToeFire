@@ -1,0 +1,423 @@
+
+body {
+	z-index: 0;
+	background-color: white;
+	-webkit-user-select: none;  
+  	-moz-user-select: none;    
+  	-ms-user-select: none;      
+  	user-select: none;
+  	font-family: 'Exo', sans-serif;
+
+}
+.typeplay span {
+/*	font-family: icon;*/
+}
+
+
+#content {
+	width: 100%;
+}
+body {
+	z-index: 0;
+	background-color: white;
+	-webkit-user-select: none;  
+  	-moz-user-select: none;    
+  	-ms-user-select: none;      
+  	user-select: none;
+  	font-family: 'Exo', sans-serif;
+
+}
+.main {
+	position: relative;
+	z-index: 1;
+	width: 308px;
+	height: 388px;
+	margin: 120 auto;
+	background-color: #ccc;
+	margin-bottom: 0;
+	
+
+}
+.lift {
+	/*box-shadow: 0 0 20px #aaa;*/
+	background-color: white;
+	transition: 2s;
+}
+.row .cell:nth-child(3) {
+	margin-right: -4px;
+
+}
+
+.menubox {
+	position: absolute;
+	width: 100%;
+	z-index: 1;
+	top: -122px;
+}
+.menu {
+	width: 300px;
+	height: 118px;
+	margin: 0 auto;
+	background-color: white;
+	display: block;
+
+}
+.menuopen {
+	top: 67px;
+	transition: 1s;
+	display: block;
+}
+.menuclosed {
+	top: -182px;
+	transition: 1s;
+	display: block;
+}
+
+.cell {
+	z-index: 2;
+	background-color: white;
+	height: 77px;
+	width: 96px;
+	display: inline-block;
+	text-align: center;
+	margin-top: 5px;
+	margin-right: 4px;
+	font-size: 40px;
+	padding-top: 45px;
+	transition: 0.5s;
+	border: 2px solid white;
+}
+.winSquare {
+	/*outline: 4px dashed orange;*/
+
+}
+.loseSquare p {
+	color: white;
+}
+.winSquare p {
+	color: orange;
+	font-weight: 900;
+}
+
+.greyOut {
+	background-color: #ccc;
+	border: 2px solid #ccc;
+}
+.cell:hover{
+	background-color: #ddd;
+	border: 2px solid #ddd;
+}
+.shad{
+	box-shadow: 0 0 10px #aaa;
+}
+
+.centerOrangehov:hover{
+	background-color: orange;
+	border: 2px solid orange;
+}
+.centerOrange{
+	background-color: orange;
+	color: white;
+	border: 2px solid orange;
+}
+.centerOrange:hover{
+	border: 2px solid white;
+	outline: 2px solid orange;
+}
+
+.row:nth-child(1) .cell {
+	margin-top: 0;
+}
+/*.row:nth-child(2) .cell:nth-child(2):hover {
+	background-color: orange;
+}*/
+
+.celltext {
+	display: inline-block;
+	font-family: 'Exo', sans-serif;
+	font-size: 70px;
+	color: orange;
+	margin-top: -34px;
+	margin-bottom: 0px;
+	padding-top: 0px;
+	padding-bottom: 70px;
+
+}
+
+.starttext {
+	font-size: 37px;
+	color: white;
+	margin-top: -11px;
+	padding-bottom: 37px;
+
+}
+
+.sidel {
+	position: absolute;
+	top: 83px;
+	right: 75%;
+	display: none;
+	opacity: 0;
+	transition: 1s;
+	z-index: 2;
+	
+}
+.sider {
+	
+	position: absolute;
+	top: 83px;
+	left: 75%;
+	text-align: right;
+	display: none;
+	opacity: 0;
+	transition: 1s;
+	z-index: 2;
+	
+}
+
+.bestofbox {
+	width: 308px;
+	margin: 0 auto;
+	margin-top: 0px;
+	color: orange;
+	transition: 0.5s;
+	display: none;
+
+}
+
+.dblock {
+	display: block;
+	opacity: 1;
+}
+.zdex {
+	z-index: -1;
+	display: block;
+	opacity: 1;
+	transition: 2s;
+	}
+
+.dblockclear {
+	display: block;
+	transition: 2s;
+}
+header div.dblockclear {
+	display: block;
+	transition: 0;
+}
+.white {
+	color: white;
+}
+.box-shadow-menu {
+  position: absolute;
+  padding-left: 1.25em;
+  left: 48.3%;
+  top: 5px;
+}
+.box-shadow-menu:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.25em;
+  width: .8em;
+  height: 0.1em;
+  background: #ccc;
+  box-shadow: 
+    0 0.25em 0 0 #ccc,
+    0 0.5em 0 0 #ccc;
+}
+
+.typeplay, .timeplay {
+
+	font-size: 24px;
+	padding-top: 11;
+	height: 45px;
+	color: orange;
+	background-color: white;
+	text-align: center;
+	border: 2px solid white;
+	outline: 2px solid orange;
+	margin-bottom: 2px;
+
+}
+.timeplay i, .timeplay {
+	color: #ccc;
+}
+.typeplay i {
+	text-align: right;
+	color: orange;
+}
+.typeplay:hover i{
+	color: white;
+}
+.typeplayselected{
+
+background-color: orange;
+color: white;
+border: 2px solid white;
+
+}
+.typeplayselected i {
+	color: white;
+}
+
+.timeselected i, .timeselected  {
+	color: orange;
+}
+.timeplay:hover {
+	border-color: orange;
+}
+
+.typeplay:hover {
+
+background-color: orange;
+color: white;
+border: 2px solid white;
+}
+/*Progress Timer Style*/
+
+.progressHolder {
+
+	width: 30px;
+	height: 30px;
+	margin: 0 auto;
+	margin-top: -50px;
+	border-radius: 100px;
+	cursor: 
+	/*border: 1px solid black;*/
+}
+.dot {
+	position: relative;
+	width: 4px;
+	height: 4px;
+	border-radius: 100px;
+	background-color: white;
+	box-shadow: 0 0 0px 1px #aaa inset;
+	transition: 2s;
+}
+.fill {
+	background-color: orange;
+	box-shadow: 0 0 0px #aaa inset;
+	transition: .7s;
+}
+.fillout {
+	background-color: white;
+	box-shadow: 0 0 2px #aaa inset;
+	transition: .7s;
+}
+.gameTime {
+	background-color: rgba(0,0,0,0);
+	box-shadow: 0 0px 0px 1px orange;
+}
+.dot:nth-child(1){
+	margin: 0 auto;
+margin-top: -2px;
+}
+.dot:nth-child(2){
+	margin-left: 23.7px;
+margin-top: 0.3px;
+}
+.dot:nth-child(3){
+	margin-left: 28.5px;
+margin-top: 6.7px;
+}
+.dot:nth-child(4){
+	margin-left: 23.7px;
+margin-top: 6.7px;
+}
+.dot:nth-child(5){
+	margin: 0 auto;
+margin-top: 0.3px;
+}
+.dot:nth-child(6){
+	margin-top: -7.7px;
+margin-left: 2.5px;
+}
+.dot:nth-child(7){
+	margin-top: -15px;
+margin-left: -2.3px;
+}
+.dot:nth-child(8){
+	margin-left: 2.3px;
+margin-top: -15px;
+}
+.white {
+	color: white;
+}
+/*Progress Timer Style*/
+
+
+@media only screen and (max-width: 400px), only screen and (max-device-width: 480px){
+
+	.box-shadow-menu {
+		left: 6.8%;
+		display: block;
+	}
+	.progressHolder{
+	margin-top: 373px;
+	top: 69px;
+	}
+
+	.box-shadow-menu:before {
+		width: .5em;
+	height: 0.08em;
+	} 
+	.menu{
+		width: 305px;
+		height: 60px;
+		margin: 0 auto;
+		background-color: white;
+		display: block;
+	}
+	.menuopen {
+		top: 43px;
+		transition: .6s;
+		display: block;
+	}
+	.menutext {
+		display: none;
+	}
+
+	.menuclosed{
+		transition: .6s;
+		top: -19px;
+	}
+	.timeplay, .typeplay {
+		float: left;
+		margin-right: 2px;
+		width: 70px;
+	}
+	.graybox, .homewin, .awaywin, .playagain {
+	top: 43px;
+	}
+
+	#playagaintext {
+
+	margin-top: 0px;
+	}
+	.sidel, .sider {
+		top: 12px;
+		color: white;
+		z-index: 11;
+	}
+	.sidel {
+		right: 80%;
+	}
+	.sider {
+		left: 80%;
+	}
+	.sider h4,.sider h3 {
+		font-size: 18px;
+		text-align: right;
+		color: white;
+	}
+	.sidel h4,.sidel h3 {
+		text-align: left;
+		font-size: 18px;
+		color: white;
+	}
+	.progressHolderrow {
+		z-index: 0;
+	}
+
+
+}
