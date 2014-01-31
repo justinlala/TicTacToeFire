@@ -22,14 +22,13 @@ angular.module("TicTacTio", ["firebase"])
 				start: true,
 				winner: false,
 				regplay: 1,
-				timedGame: true,
 				mopen: false,
 				apos: "'",
 				way: '',
 				wayNum: 0,
 				homewinner: false,
 				awaywinner: false,
-				open: true
+				open: true,
 			});
 			$scope.fbRoot.$add( {
 				timeChoiceText: "On",
@@ -49,7 +48,7 @@ angular.module("TicTacTio", ["firebase"])
 				$scope.game = $scope.fbRoot.$child(IDs[0]);
 				$scope.visual = $scope.fbRoot.$child(IDs[1]);
 				$scope.gameTimer =$scope.fbRoot.$child(IDs[2]);
-				$scope.players=[$scope.fbRoot.$child(IDs[3]),$scope.fbRoot.$child(IDs[4])];
+				$scope.players = [$scope.fbRoot.$child(IDs[3]),$scope.fbRoot.$child(IDs[4])];
 				console.log($scope.game);
 			});
 			console.log($scope.game);
@@ -57,9 +56,10 @@ angular.module("TicTacTio", ["firebase"])
 		else if(IDs.length == 5)
 		{
 			playerNum = IDs.length - 4;
-			$scope.fbRoot.$on("change", function() {
+			
 
-				$scope.game = $scope.fbRoot.$child(IDs[0]);
+			$scope.fbRoot.$on("change", function() {
+			$scope.game = $scope.fbRoot.$child(IDs[0]);
 			$scope.visual = $scope.fbRoot.$child(IDs[1]);
 			$scope.gameTimer =$scope.fbRoot.$child(IDs[2]);
 			$scope.players = [$scope.fbRoot.$child(IDs[3]),$scope.fbRoot.$child(IDs[4])];
@@ -73,6 +73,7 @@ angular.module("TicTacTio", ["firebase"])
 			$scope.visual = $scope.fbRoot.$child(IDs[1]);
 			$scope.gameTimer =$scope.fbRoot.$child(IDs[2]);
 			$scope.players = [$scope.fbRoot.$child(IDs[3]),$scope.fbRoot.$child(IDs[4])];
+			playerNum = IDs.length;
 		}
 
 	});
@@ -82,8 +83,8 @@ angular.module("TicTacTio", ["firebase"])
 
 
 	
-	var onlinesync = false;
-
+var onlinesync = false; // When value is true firebase objects are created
+//Player Objects
 	$scope.players = [{chip:"X",name:"Home",wins: 0},{chip:"O",name:"Away",wins: 0}];
 
 // Game Var
@@ -174,35 +175,37 @@ $scope.gameTimer = {
             
     };
 
+    //Reset board during online play- called when regplay == 1
     onlineBoardReset = function(){
 
     	$scope.game = { board: [['','',''],['','',''],['','','']], gameNum: 1, bestOf: 3, counter: 0, first: true };
 	 	$scope.visual = { menu: true,
-				wait: false,
-				start: true,
-				winner: false,
-				regplay: 1,
-				timedGame: true,
-				mopen: false,
-				apos: "'",
-				way: '',
-				wayNum: 0,
-				homewinner: false,
-				awaywinner: false,
-				open: true
-			};
-			$scope.gameTimer = {
-				timeChoiceText: "On",
-				counts: [false, false, false, false, false, false, false, false],
-				timesup: false,
-				paused: false,
-				countin: 0,
-				timeUpWin: ""
-			};
-			$scope.players = [{chip:"X",name:"Home",wins: 0},{chip:"O",name:"Away",wins: 0}];
+			wait: false,
+			start: true,
+			winner: false,
+			regplay: 1,
+			timedGame: true,
+			mopen: false,
+			apos: "'",
+			way: '',
+			wayNum: 0,
+			homewinner: false,
+			awaywinner: false,
+			open: true
+		};
+		$scope.gameTimer = {
+			timeChoiceText: "On",
+			counts: [false, false, false, false, false, false, false, false],
+			timesup: false,
+			paused: false,
+			countin: 0,
+			timeUpWin: ""
+		};
+		$scope.players = [{chip:"X",name:"Home",wins: 0},{chip:"O",name:"Away",wins: 0}];
 
     };
 
+    //begins the timer - called at the begining of a players move
 	startTime = function(){
 
 		if ( angular.isDefined(timekeeper) ) return;
@@ -225,14 +228,16 @@ $scope.gameTimer = {
     	}, 1000);
 	}
 
-	$scope.$watch('timedGame',function(){
+	// this checks if the timed feature has been turned on and updates the value
+	$scope.$watch('visual.timedGame',function(){
 		if($scope.visual.timedGame == true){
+			console.log("hekhekjw");
 			$scope.gameTimer.timeChoiceText="On ";
-			updateFire();
+			
 		}
 		else{
 			$scope.gameTimer.timeChoiceText="Off";
-			updateFire();
+			
 		}
 	});
 
@@ -396,8 +401,10 @@ $scope.gameTimer = {
 
 
 				console.log("network move");
-				clearTime();
-				startTime();
+				// clearTime();
+				// startTime();
+				console.log("network move");
+				console.log(playerNum);
 				console.log($scope.players[playerNum].chip);
 				console.log(checkTurn());
 				console.log($scope.game.counter);
@@ -462,6 +469,7 @@ $scope.gameTimer = {
 		return false;
 	};
 
+	// After a move has been made this function runs to check for wins and update the scoreboard
 	afterMove = function() {
 
 		if(checkWin($scope.game.board)==2 || $scope.gameTimer.timeUpWin =="X"){
@@ -499,6 +507,7 @@ $scope.gameTimer = {
 		return 0;
 	};
 
+	//this function gets called when the quit button at the top of the page gets clicked. It completely resets the game.
 	$scope.quit = function() {
 		if($scope.visual.start==true){
 			console.log("start menu true");
@@ -580,6 +589,7 @@ $scope.gameTimer = {
 		return 0;
 	};
 
+	// This function runs as the opponent against the player in 1 player mode. Returns the best move.
 	computerPlayer = function(inboard) {
 
 		var moved = false; movedx = false; move = [,]; movex = [,]; movereg = [,]; availableMoves = [];
@@ -743,7 +753,7 @@ $scope.gameTimer = {
 		
 		
 	};
-
+	// This places a move to the board. Used to place the computers move.
 		placeMove = function(setmove) {
 			setTimeout(function(){
 				$scope.$apply(function() {
